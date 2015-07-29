@@ -15,8 +15,11 @@ var generatedIndexMessage = [
 ].join("\n");
 
 var CONFIG_FILE_NAME = 'scss.json';
+var ASSETS_PACKAGES = '.meteor/local/build/programs/server/assets/packages/';
 
-var projectOptionsFile = path.resolve(process.cwd(), CONFIG_FILE_NAME);
+var projectTopDir = process.cwd();
+var projectOptionsFile = path.resolve(projectTopDir, CONFIG_FILE_NAME);
+var projectOptionsFile2 = path.resolve(projectTopDir, '.meteor', CONFIG_FILE_NAME);
 
 var loadJSONFile = function (filePath) {
   var content = fs.readFileSync(filePath);
@@ -26,6 +29,16 @@ var loadJSONFile = function (filePath) {
   catch (e) {
     console.log("Error: failed to parse ", filePath, " as JSON");
     return {};
+  }
+};
+
+var repairScssOptions = function(options) {
+  if (options['imports']) {
+    var imports = options.imports.map(function(packageName) {
+      return path.join(ASSETS_PACKAGES, packageName.replace(':', '_'));
+    });
+    options['includePaths'] = _.merge({}, options['includePaths'], imports);
+    delete options['imports'];
   }
 };
 
@@ -44,9 +57,13 @@ var sourceHandler = function(compileStep) {
     scssOptions = loadJSONFile(packageOptionsFile);
   } else if (fs.existsSync(projectOptionsFile)) {
     scssOptions = loadJSONFile(projectOptionsFile);
+  } else if (fs.existsSync(projectOptionsFile2)) {
+    scssOptions = loadJSONFile(projectOptionsFile2);
   } else if (compileStep.fileOptions && compileStep.fileOptions.testOptions) {
     scssOptions = compileStep.fileOptions.testOptions;
   }
+
+  repairScssOptions(scssOptions);
 
   if ( scssOptions.useIndex ) {
     var indexFilePath = scssOptions.indexFilePath || "index.scss";
