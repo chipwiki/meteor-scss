@@ -6,15 +6,28 @@ This is a Sass build plugin for Meteor. It compiles Sass files with node-sass an
 Install using Meteor's package management system:
 
 ```bash
-> meteor add fourseven:scss
+> meteor add karfield:scss
 ```
 
 ## Usage
 Without any additional configuration after installation, this package automatically finds all `.scss` and `.sass` files in your project, compiles them with [node-sass](https://github.com/sass/node-sass), and includes the resulting CSS in the application bundle that Meteor sends to the client. The files can be anywhere in your project.
 
 ## Configuration
-This package has options that can be specified in a `scss.json` file in the project's root directory (or under .meteor directory, or a package's root directory, if you're using it from
-a package). Please restart your server after changing this file to allow Sass to recompute your css.
+This package has options that can be specified in a `scss.json` file in the project's root directory (or a package's root directory, if you're using it from a package). Please restart your server after changing this file to allow Sass to recompute your css.
+
+You can put your scss config in **.meter/scss.json** now!
+
+
+### imports option
+Instead of add a long path of a meteor pacakge, you can simply write the config like this:
+
+```json
+{
+  "imports": [
+    "francocatena:compass"
+  ]
+}
+```
 
 ### includePaths
 If you have packages that have stylesheets you want to import, you can add those paths to the compiler to simplify importing them
@@ -27,17 +40,6 @@ For example, if you're using Bourbon and Neat with [mquandalle:bower](https://gi
     ".meteor/local/bower",
     ".meteor/local/bower/node-bourbon/assets/stylesheets",
     ".meteor/local/bower/neat/app/assets/stylesheets"
-  ]
-}
-```
-
-### imports option
-Instead of add a long path of a meteor pacakge, you can simply write the config like this:
-
-```json
-{
-  "imports": [
-    "francocatena:compass"
   ]
 }
 ```
