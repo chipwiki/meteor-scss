@@ -37,7 +37,7 @@ var repairScssOptions = function(options) {
     var imports = options.imports.map(function(packageName) {
       return path.join(ASSETS_PACKAGES, packageName.replace(':', '_'));
     });
-    options['includePaths'] = _.merge({}, options['includePaths'], imports);
+    options['includePaths'] = _.union(options['includePaths'], imports);
     delete options['imports'];
   }
 };
